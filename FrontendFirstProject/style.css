@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Varela+Round&display=swap');
 *{
     margin : 0;
-    box-sizing: 0;
+    box-sizing: border-box;
     padding : 0;
 }
 
@@ -12,4 +12,53 @@ a, a:link, a:visited{
 
 li{
     list-style: none;
+}
+
+.container{
+    width : 1140px;
+    margin : 0 auto;
+
+}
+header h1 button{
+    font-size: 2rem;
+    font-weight: bold;
+}
+header nav ul {
+    display: flex;
+}
+
+header nav ul li{
+    padding: 10px;
+
+}
+
+header nav ul li button{
+    font-size: 1.2rem;
+}
+section{
+    font-family: "Poppins", sans-serif;
+    padding: 5rem 0;
+}
+section:nth-child(2n){
+    background-color: #f8f8f8;
+}
+section .about-self::after{
+    counter:"";
+    clear : both;
+    display: block;
+}
+section .title{
+    margin-bottom: 3rem;
+}
+section .title h4{
+    font-size: 1.35rem;
+    color : #ed4848;
+    position: relative;
+}
+section .title h2{
+    font-size: 3.5rem;
+}
+
+section .title p{
+    font-size: 1.15rem;
 }
