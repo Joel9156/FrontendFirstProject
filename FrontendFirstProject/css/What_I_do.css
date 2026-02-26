@@ -1,6 +1,3 @@
-section{
-    background-color: #f8f8f8;
-}
 section .do-me::after{
     content: "";
     display: block;
