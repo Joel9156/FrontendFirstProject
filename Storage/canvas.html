@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <style>
+        body { margin: 0; background: #111; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        canvas { position: absolute; top: 0; left: 0; }
+        #text-container { position: relative; color: #0ff; font-family: 'Courier New', monospace; font-size: 3rem; font-weight: bold; text-shadow: 0 0 20px #0ff; z-index: 10; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <div id="text-container"><span id="typing-text"></span><span id="cursor">|</span></div>
+    <canvas id="particleCanvas"></canvas>
+
+    <script>
+        const spanEL = document.querySelector("#typing-text");
+        const canvas = document.getElementById("particleCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const txtArr = ["Front-End Developer", "Creative Coder", "AUT Student", "Joel Lee"];
+        let index = 0;
+        let currentTxt = txtArr[index].split("");
+        let particles = [];
+
+        // 캔버스 크기 조절
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        // 파티클 클래스
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 5 + 2;
+                this.speedX = Math.random() * 6 - 3;
+                this.speedY = Math.random() * 6 - 3;
+                this.color = `hsl(${Math.random() * 60 + 180}, 100%, 50%)`;
+                this.alpha = 1;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.alpha -= 0.02;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function createExplosion() {
+            const rect = spanEL.getBoundingClientRect();
+            for (let i = 0; i < 10; i++) {
+                particles.push(new Particle(rect.right, rect.top + rect.height / 2));
+            }
+        }
+
+        function writeText() {
+            if (currentTxt.length > 0) {
+                spanEL.textContent += currentTxt.shift();
+                createExplosion();
+                setTimeout(writeText, 150);
+            } else {
+                setTimeout(deleteText, 2000);
+            }
+        }
+
+        function deleteText() {
+            let tempTxt = spanEL.textContent.split("");
+            if (tempTxt.length > 0) {
+                tempTxt.pop();
+                spanEL.textContent = tempTxt.join("");
+                setTimeout(deleteText, 50);
+            } else {
+                index = (index + 1) % txtArr.length;
+                currentTxt = txtArr[index].split("");
+                setTimeout(writeText, 500);
+            }
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(17, 17, 17, 0.2)'; // 잔상 효과
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, i) => {
+                p.update();
+                p.draw();
+                if (p.alpha <= 0) particles.splice(i, 1);
+            });
+            requestAnimationFrame(animate);
+        }
+
+        writeText();
+        animate();
+    </script>
+</body>
+</html>
